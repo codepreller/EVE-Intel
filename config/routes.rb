@@ -1,14 +1,10 @@
 Rails.application.routes.draw do
-  get 'user_information/show'
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
-  resources :articles
   resources :reports
-  
+
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+  root 'reports#new'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
