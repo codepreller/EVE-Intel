@@ -5,7 +5,7 @@ class ReportsController < ApplicationController
   def create
     @user_ids = user_ids(reports_params[:names])
 
-    render xml: @user_ids
+    render text: @user_ids
   end
 
   private
