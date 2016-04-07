@@ -26,8 +26,10 @@ module XMLParser
 
           rows[attributes[key]] = attributes
         end
-
         results[name] = rows
+      else
+        #TODO: herausfinden wie ich vernuenftig den rest parse
+
       end
     end
     puts results.inspect
