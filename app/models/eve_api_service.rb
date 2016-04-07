@@ -21,8 +21,6 @@ module EveApiService
 
   def self.character_info(character_id)
     result = EveApiService.eve_api_call(CHARACTER_INFO_ENDPOINT_PATH, character_id)
-
-    
   end
 
   def self.eve_api_call(endpoint_path, argument)

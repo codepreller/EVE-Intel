@@ -34,7 +34,6 @@ module XMLParser
         end
       end
     end
-    puts results.inspect
     results
   end
 end
