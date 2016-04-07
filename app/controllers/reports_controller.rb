@@ -3,8 +3,9 @@ class ReportsController < ApplicationController
   end
 
   def create
-    @user_ids = user_ids(reports_params[:names])
-    render text: @user_ids
+    @character_ids = character_ids(reports_params[:names])
+    @character_infos = character_info(@character_ids.values)
+    render text: @character_infos
   end
 
   private
@@ -13,15 +14,20 @@ class ReportsController < ApplicationController
     params.require(:report).permit(:names)
   end
 
-  def user_ids(names)
+  def character_ids(names)
     #eingabeliste by umbrüchen splitten, leere eintraege entfernen, dann wieder comma sepperated zusammenfügen zum string
     name_list = names.split("\r\n").compact.join(',')
 
     character_ids = EveApiService.character_id(name_list)
   end
 
-  def user_info(character_id)
-    EveApiService.character_info(character_id)
+  def character_info(character_ids)
+    character_infos = Hash.new
+    character_ids.each do |character_id|
+      character_infos[character_id] = EveApiService.character_info(character_id)
+    end
+
+    character_infos
   end
 
   def save_character(character_ids)

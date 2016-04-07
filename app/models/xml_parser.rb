@@ -9,6 +9,7 @@ module XMLParser
 
     results = Hash.new
     result.each do |node|
+      #if the node is a rowset, parse the rowset
       if node.name == "rowset"
         name = node.attribute('name').to_s
         key = node.attribute('key').to_s
@@ -28,8 +29,9 @@ module XMLParser
         end
         results[name] = rows
       else
-        #TODO: herausfinden wie ich vernuenftig den rest parse
-
+        if (node.class.name == "Nokogiri::XML::Element")
+          results[node.name] = node.content
+        end
       end
     end
     puts results.inspect
