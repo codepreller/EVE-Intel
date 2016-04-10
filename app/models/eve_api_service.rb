@@ -28,4 +28,13 @@ module EveApiService
     xml = open(BASE_PATH + endpoint_path + CGI.escape(argument)).read
     XMLParser.parse(xml)
   end
+
+  def self.element_value(eve_xml, element)
+    value = eve_xml[element]
+    if value.nil?
+      value = ""
+    else
+      value
+    end
+  end
 end

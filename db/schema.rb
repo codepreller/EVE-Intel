@@ -13,25 +13,17 @@
 
 ActiveRecord::Schema.define(version: 20160406195915) do
 
-  create_table "articles", force: :cascade do |t|
-    t.string   "title"
-    t.text     "text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "characters", force: :cascade do |t|
     t.string   "characterID"
-    t.string   "name"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "characterName"
+    t.string   "corporationID"
+    t.string   "corporation"
+    t.string   "allianceID"
+    t.string   "alliance"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "characters", ["characterID"], name: "index_characters_on_characterID", unique: true
-
-  create_table "reports", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
 end

@@ -6,8 +6,8 @@ class ReportsController < ApplicationController
     @character_ids = character_ids(reports_params[:names])
     @character_infos = character_info(@character_ids.values)
 
-    @alliance_count = alliances(@character_infos)
-    render text: @alliance_count
+    #@alliance_count = count_alliances(@character_infos)
+    render text: "passed"
   end
 
   private
@@ -16,22 +16,10 @@ class ReportsController < ApplicationController
     params.require(:report).permit(:names)
   end
 
-  def alliance(character_info)
-    alliance = character_info["alliance"]
-    if alliance.nil?
-      puts "testnil"
-      alliance = "ohne Corp"
-    else
-      puts alliance
-      alliance
-    end
-  end
-
-  def alliances(character_infos)
+  def count_alliances(character_infos)
     alliance_count = Hash.new(0)
     character_infos.values.each do |character_info|
-      alliance = alliance(character_info)
-      puts alliance
+      alliance = EveApiService.element_value(character_info, "alliance")
       alliance_count[alliance] += 1
     end
 
@@ -48,7 +36,28 @@ class ReportsController < ApplicationController
   def character_info(character_ids)
     character_infos = Hash.new
     character_ids.each do |character_id|
-      character_infos[character_id] = EveApiService.character_info(character_id)
+      character_info = EveApiService.character_info(character_id)
+      character_infos[character_id] = character_info
+
+      character = Character.find_by(characterID: character_id)
+      if character.nil?
+        Character.create(
+          characterName: EveApiService.element_value(character_info, "characterName"),
+          characterID: EveApiService.element_value(character_info, "characterID"),
+          corporationID: EveApiService.element_value(character_info, "corporationID"),
+          corporation: EveApiService.element_value(character_info, "corporation"),
+          allianceID: EveApiService.element_value(character_info, "allianceID"),
+          alliance: EveApiService.element_value(character_info, "alliance")
+        )
+      else
+        character.update(
+          characterName: EveApiService.element_value(character_info, "characterName"),
+          corporationID: EveApiService.element_value(character_info, "corporationID"),
+          corporation: EveApiService.element_value(character_info, "corporation"),
+          allianceID: EveApiService.element_value(character_info, "allianceID"),
+          alliance: EveApiService.element_value(character_info, "alliance")
+        )
+      end
     end
     character_infos
   end
