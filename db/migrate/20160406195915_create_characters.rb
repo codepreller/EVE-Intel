@@ -1,18 +1,18 @@
 class CreateCharacters < ActiveRecord::Migration
   def change
     create_table :characters do |t|
-      t.string :characterID
-      t.string :characterName
+      t.string :character_id
+      t.string :character_name
 
-      t.string :corporationID
-      t.string :corporation
+      t.string :corporation_id
+      t.string :corporation_name
 
-      t.string :allianceID
-      t.string :alliance
+      t.string :alliance_id
+      t.string :alliance_name
 
       t.timestamps null: false
     end
 
-    add_index :characters, :characterID, unique: true
+    add_index :characters, :character_id, unique: true
   end
 end

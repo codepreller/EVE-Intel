@@ -14,16 +14,16 @@
 ActiveRecord::Schema.define(version: 20160406195915) do
 
   create_table "characters", force: :cascade do |t|
-    t.string   "characterID"
-    t.string   "characterName"
-    t.string   "corporationID"
-    t.string   "corporation"
-    t.string   "allianceID"
-    t.string   "alliance"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "character_id"
+    t.string   "character_name"
+    t.string   "corporation_id"
+    t.string   "corporation_name"
+    t.string   "alliance_id"
+    t.string   "alliance_name"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
-  add_index "characters", ["characterID"], name: "index_characters_on_characterID", unique: true
+  add_index "characters", ["character_id"], name: "index_characters_on_character_id", unique: true
 
 end
