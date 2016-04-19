@@ -10,11 +10,10 @@ class ReportsController < ApplicationController
     #get the character ids from character_name: character_id hash
     character_ids = character_ids(reports_params[:names]).keys
 
-    #get the character affiliation informations and persist them
-    character_affiliation(character_ids)
+    @report = Report.create
 
-    @report = Report.new
-    @report.save
+    #get the character affiliation informations and persist them
+    character_affiliation(character_ids, @report.id)
 
     redirect_to @report
   end
@@ -47,22 +46,23 @@ class ReportsController < ApplicationController
       character = Character.find_by(character_id: character_id)
       if character.nil?
         Character.create(
-          character_id: EveApiService.element_value(character_info, "characterID"),
-          corporation_id: EveApiService.element_value(character_info, "corporationID"),
-          alliance_id: EveApiService.element_value(character_info, "allianceID")
+          character_id: character_info["characterID"],
+          character_name: character_info["characterName"],
+          corporation_id: character_info["corporationID"],
+          alliance_id: character_info["allianceID"]
         )
       else
         character.update(
-          character_name: EveApiService.element_value(character_info, "characterName"),
-          corporation_id: EveApiService.element_value(character_info, "corporationID"),
-          alliance_id: EveApiService.element_value(character_info, "allianceID")
+          character_name: character_info["characterName"],
+          corporation_id: character_info["corporationID"],
+          alliance_id: character_info["allianceID"]
         )
       end
     end
     character_infos
   end
 
-  def character_affiliation(character_ids)
+  def character_affiliation(character_ids, report_id)
     character_result = EveApiService.character_affiliation(character_ids.compact.join(','))
     characters_affiliations = character_result["characters"]
 
@@ -70,30 +70,31 @@ class ReportsController < ApplicationController
       character_affiliations = characters_affiliations[character_id]
 
       #save unknown alliances
-      alliance_id = EveApiService.element_value(character_affiliations, "allianceID")
-      save_alliance(alliance_id, EveApiService.element_value(character_affiliations, "allianceName"))
+      alliance_id = character_affiliations["allianceID"]
+      save_alliance(alliance_id, character_affiliations["allianceName"])
 
-      character = Character.find_by(character_id: character_id)
-      if character.nil?
-        Character.create(
-          character_id: EveApiService.element_value(character_affiliations, "characterID"),
-          corporation_id: EveApiService.element_value(character_affiliations, "corporationID"),
-          alliance_id: alliance_id
-        )
-      else
-        character.update(
-          character_name: EveApiService.element_value(character_affiliations, "characterName"),
-          corporation_id: EveApiService.element_value(character_affiliations, "corporationID"),
-          alliance_id: alliance_id
-        )
-      end
+      #save report information
+      save_report_informations(character_affiliations, report_id)
+
     end
   end
 
+  def save_report_informations(character_affiliations, report_id)
+    ReportInformation
+      .create(
+        report_id: report_id,
+        character_id: character_affiliations["characterID"],
+        character_name: character_affiliations["characterName"],
+        alliance_id: character_affiliations["allianceID"],
+        alliance_name: character_affiliations["allianceName"],
+        corporation_id: character_affiliations["allianceID"],
+        corporation_name: character_affiliations["allianceName"]
+      )
+  end
+
   def save_alliance(alliance_id, alliance_name)
-    alliance = Alliance.find_by(alliance_id: alliance_id)
-    if !alliance.nil?
-      alliance.create(alliance_id: alliance_id, alliance_name: alliance_name)
-    end
+    Alliance
+      .create_with(alliance_id: alliance_id, alliance_name: alliance_name)
+      .find_or_create_by(alliance_id: alliance_id)
   end
 end

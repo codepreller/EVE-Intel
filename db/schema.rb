@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160416001113) do
+ActiveRecord::Schema.define(version: 20160419200533) do
 
   create_table "alliances", force: :cascade do |t|
     t.string   "alliance_id"
@@ -32,6 +32,17 @@ ActiveRecord::Schema.define(version: 20160416001113) do
   end
 
   add_index "characters", ["character_id"], name: "index_characters_on_character_id", unique: true
+
+  create_table "report_informations", force: :cascade do |t|
+    t.string   "character_id"
+    t.string   "character_name"
+    t.string   "alliance_id"
+    t.string   "alliance_name"
+    t.string   "corporation_id"
+    t.string   "corporation_name"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
 
   create_table "reports", force: :cascade do |t|
     t.datetime "created_at", null: false
