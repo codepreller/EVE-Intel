@@ -3,8 +3,6 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @alliance_count = AllianceCount.find_by(report_id: params[:id])
-
     render text:"Juhu, ne View"
   end
 
@@ -12,13 +10,12 @@ class ReportsController < ApplicationController
     #get the character ids from character_name: character_id hash
     character_ids = character_ids(reports_params[:names]).keys
 
-    #get the character informations and save them in the db
+    #get the character affiliation informations and persist them
     character_affiliation(character_ids)
 
     @report = Report.new
     @report.save
 
-    save_count_alliances(character_ids, @report.id)
     redirect_to @report
   end
 
@@ -26,24 +23,6 @@ class ReportsController < ApplicationController
 
   def reports_params
     params.require(:report).permit(:names)
-  end
-
-  def save_alliances_count(character_ids, report_id)
-    alliance_count_hash = Hash.new(0)
-    character_ids.each do |character_id|
-      alliance = Character.find_by(character_id: character_id).alliance_name
-      alliance_count_hash[alliance] += 1
-    end
-
-    alliance_count_hash.each do |alliance_name, count|
-      alliance_count = AllianceCount.new
-      alliance_count.create(
-        report_id: report_id,
-        alliance_name: alliance_name,
-        count: count
-      )
-    end
-
   end
 
   def character_ids(names)
@@ -69,19 +48,14 @@ class ReportsController < ApplicationController
       if character.nil?
         Character.create(
           character_id: EveApiService.element_value(character_info, "characterID"),
-          character_name: EveApiService.element_value(character_info, "characterName"),
           corporation_id: EveApiService.element_value(character_info, "corporationID"),
-          corporation_name: EveApiService.element_value(character_info, "corporation"),
-          alliance_id: EveApiService.element_value(character_info, "allianceID"),
-          alliance_name: EveApiService.element_value(character_info, "alliance")
+          alliance_id: EveApiService.element_value(character_info, "allianceID")
         )
       else
         character.update(
           character_name: EveApiService.element_value(character_info, "characterName"),
           corporation_id: EveApiService.element_value(character_info, "corporationID"),
-          corporation_name: EveApiService.element_value(character_info, "corporation"),
-          alliance_id: EveApiService.element_value(character_info, "allianceID"),
-          alliance_name: EveApiService.element_value(character_info, "alliance")
+          alliance_id: EveApiService.element_value(character_info, "allianceID")
         )
       end
     end
@@ -95,33 +69,31 @@ class ReportsController < ApplicationController
     character_ids.each do |character_id|
       character_affiliations = characters_affiliations[character_id]
 
+      #save unknown alliances
+      alliance_id = EveApiService.element_value(character_affiliations, "allianceID")
+      save_alliance(alliance_id, EveApiService.element_value(character_affiliations, "allianceName"))
+
       character = Character.find_by(character_id: character_id)
       if character.nil?
         Character.create(
           character_id: EveApiService.element_value(character_affiliations, "characterID"),
-          character_name: EveApiService.element_value(character_affiliations, "characterName"),
           corporation_id: EveApiService.element_value(character_affiliations, "corporationID"),
-          corporation_name: EveApiService.element_value(character_affiliations, "corporationName"),
-          alliance_id: EveApiService.element_value(character_affiliations, "allianceID"),
-          alliance_name: EveApiService.element_value(character_affiliations, "allianceName")
+          alliance_id: alliance_id
         )
       else
         character.update(
           character_name: EveApiService.element_value(character_affiliations, "characterName"),
           corporation_id: EveApiService.element_value(character_affiliations, "corporationID"),
-          corporation_name: EveApiService.element_value(character_affiliations, "corporationName"),
-          alliance_id: EveApiService.element_value(character_affiliations, "allianceID"),
-          alliance_name: EveApiService.element_value(character_affiliations, "allianceName")
+          alliance_id: alliance_id
         )
       end
-
     end
   end
 
-  def save_character(character_ids)
-    character_ids.each do |name, character_id|
-      @character = Character.new(name:name, character_id:character_id)
-      @character.save
+  def save_alliance(alliance_id, alliance_name)
+    alliance = Alliance.find_by(alliance_id: alliance_id)
+    if !alliance.nil?
+      alliance.create(alliance_id: alliance_id, alliance_name: alliance_name)
     end
   end
 end

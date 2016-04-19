@@ -11,25 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160413192351) do
+ActiveRecord::Schema.define(version: 20160416001113) do
 
-  create_table "alliance_counts", force: :cascade do |t|
+  create_table "alliances", force: :cascade do |t|
+    t.string   "alliance_id"
     t.string   "alliance_name"
-    t.integer  "count"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.integer  "report_id"
   end
+
+  add_index "alliances", ["alliance_id"], name: "index_alliances_on_alliance_id", unique: true
 
   create_table "characters", force: :cascade do |t|
     t.string   "character_id"
     t.string   "character_name"
     t.string   "corporation_id"
-    t.string   "corporation_name"
     t.string   "alliance_id"
-    t.string   "alliance_name"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   add_index "characters", ["character_id"], name: "index_characters_on_character_id", unique: true
