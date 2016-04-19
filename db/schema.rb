@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20160419200533) do
   add_index "characters", ["character_id"], name: "index_characters_on_character_id", unique: true
 
   create_table "report_informations", force: :cascade do |t|
+    t.integer  "report_id"
     t.string   "character_id"
     t.string   "character_name"
     t.string   "alliance_id"
