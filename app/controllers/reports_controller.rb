@@ -3,7 +3,8 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @alliance_count = ReportInformation.where(report_id: params[:id]).group("alliance_name").count
+    @alliance_count = ReportInformation.order("count_all DESC").where(report_id: params[:id]).group(:alliance_name).count
+    @corporation_count = ReportInformation.order("count_all DESC").where(report_id: params[:id]).group(:corporation_name).count
   end
 
   def create
@@ -86,8 +87,8 @@ class ReportsController < ApplicationController
         character_name: character_affiliations["characterName"],
         alliance_id: character_affiliations["allianceID"],
         alliance_name: character_affiliations["allianceName"],
-        corporation_id: character_affiliations["allianceID"],
-        corporation_name: character_affiliations["allianceName"]
+        corporation_id: character_affiliations["corporationID"],
+        corporation_name: character_affiliations["corporationName"]
       )
   end
 

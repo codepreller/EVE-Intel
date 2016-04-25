@@ -8,3 +8,12 @@
     </tr>
   <% end %>
 </table>
+
+<table>
+  <% @corporation_count.each do |corporation| %>
+    <tr>
+      <td><%= corporation[0] %></td>
+      <td><%= corporation[1] %></td>
+    </tr>
+  <% end %>
+</table>
