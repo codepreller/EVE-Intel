@@ -1,19 +1,19 @@
 <h1>Alliance Count</h1>
 
 <table>
-  <% @alliance_count.each do |alliance| %>
+  <% @alliance_count.each do |alliance_name, alliance_count| %>
     <tr>
-      <td><%= alliance[0] %></td>
-      <td><%= alliance[1] %></td>
+      <td><%= alliance_name %></td>
+      <td><%= alliance_count %></td>
     </tr>
   <% end %>
 </table>
 
 <table>
-  <% @corporation_count.each do |corporation| %>
+  <% @corporation_count.each do |corporation_name, corporation_count| %>
     <tr>
-      <td><%= corporation[0] %></td>
-      <td><%= corporation[1] %></td>
+      <td><%= corporation_name %></td>
+      <td><%= corporation_count %></td>
     </tr>
   <% end %>
 </table>
