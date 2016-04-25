@@ -3,8 +3,7 @@ class ReportsController < ApplicationController
   end
 
   def show
-    puts "symbol: " + params[:id]
-    puts @alliance_count = ReportInformation.where(report_id: params[:id]).group("alliance_name").count
+    @alliance_count = ReportInformation.where(report_id: params[:id]).group("alliance_name").count
   end
 
   def create
