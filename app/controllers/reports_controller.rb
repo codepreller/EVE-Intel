@@ -3,7 +3,8 @@ class ReportsController < ApplicationController
   end
 
   def show
-    render text:"Juhu, ne View"
+    puts "symbol: " + params[:id]
+    puts @alliance_count = ReportInformation.where(report_id: params[:id]).group("alliance_name").count
   end
 
   def create
@@ -75,7 +76,6 @@ class ReportsController < ApplicationController
 
       #save report information
       save_report_informations(character_affiliations, report_id)
-
     end
   end
 

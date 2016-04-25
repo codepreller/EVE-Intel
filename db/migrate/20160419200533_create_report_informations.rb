@@ -1,7 +1,7 @@
 class CreateReportInformations < ActiveRecord::Migration
   def change
     create_table :report_informations do |t|
-      t.references :report
+      t.belongs_to :report
 
       t.string :character_id
       t.string :character_name

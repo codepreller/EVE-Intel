@@ -1,0 +1,10 @@
+<h1>Alliance Count</h1>
+
+<table>
+  <% @alliance_count.each do |alliance| %>
+    <tr>
+      <td><%= alliance[0] %></td>
+      <td><%= alliance[1] %></td>
+    </tr>
+  <% end %>
+</table>
